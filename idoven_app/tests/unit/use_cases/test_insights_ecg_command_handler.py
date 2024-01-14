@@ -14,6 +14,8 @@ async def test_get_insights_ecg():
     actual_ecg = await handler.process(command)
 
     repository.find_by_id.assert_called_once_with(command.ecg_id)
+    
+    assert actual_ecg.insights == {"I": 3, "II": 2}
 
 
 async def test_raises_an_error_when_the_ecg_is_not_found():
