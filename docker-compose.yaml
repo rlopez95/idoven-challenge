@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  ecg:
+    build: .
+    volumes:
+      - .:/code
+    environment:
+      PYTHONPATH: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "mongo"
+      - "mongo-seed"
+
+  mongo-seed:
+    build: mongo-seed
+    depends_on:
+      - "mongo"
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ecg
