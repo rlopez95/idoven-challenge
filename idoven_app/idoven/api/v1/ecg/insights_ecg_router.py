@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic_settings import SettingsConfigDict
 from idoven_app.idoven.domain.command_handler import CommandHandler
 from idoven_app.idoven.domain.ecg import ECGNotFoundException
 from idoven_app.idoven.infrastructure.mongo_ecg_repository import MongoECGRepository
@@ -11,7 +10,7 @@ from idoven_app.idoven.use_cases.insights_ecg_command import (
 from idoven_app.idoven.config import settings
 
 
-insights_ecg_router = APIRouter(prefix=SettingsConfigDict.api_v1_prefix)
+insights_ecg_router = APIRouter(prefix=settings.api_v1_prefix)
 
 
 async def _insigths_ecg_command_handler() -> CommandHandler:

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from idoven_app.idoven.settings import settings
+from idoven_app.idoven.config import settings
 
 health_router = APIRouter(prefix=settings.api_v1_prefix)
 

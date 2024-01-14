@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock
 from idoven_app.idoven.use_cases.register_ecg_command import RegisterECGCommandHandler, RegisterECGCommand
 from idoven_app.idoven.domain.ecg_repository import ECGRepository
-from tests.helper.test_builder import ECGBuilder, TestECGData
+from idoven_app.tests.helper.test_builder import ECGBuilder, TestECGData
 
 
 async def test_register_ecg():

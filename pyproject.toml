@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "idoven_app"
+name = "idoven"
 version = "0.1.0"
-description = ""
+description = "Idoven backend challenge"
 authors = ["Ruben <lopezruben95@gmail.com>"]
 readme = "README.md"
 
@@ -13,8 +13,6 @@ pymongo = "^4.6.1"
 motor = "^3.3.2"
 pydantic-settings = "^2.1.0"
 python-dotenv = "^1.0.0"
-
-[tool.poetry.group.test.dependencies]
 pytest = "^7.4.4"
 pytest-asyncio = "^0.23.3"
 

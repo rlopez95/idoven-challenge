@@ -1,9 +1,11 @@
 version: "3.9"
 services:
-  ecg:
+  idoven:
     build: .
     volumes:
       - .:/code
+    env_file:
+      - .env
     environment:
       PYTHONPATH: .
     ports:

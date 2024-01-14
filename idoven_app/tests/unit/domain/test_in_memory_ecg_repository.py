@@ -1,6 +1,6 @@
 from datetime import datetime
 from idoven_app.idoven.infrastructure.in_memory_ecg_repository import InMemoryECGRepository
-from tests.helper.test_builder import ECGBuilder, TestECGData
+from idoven_app.tests.helper.test_builder import ECGBuilder, TestECGData
 
 
 async def test_find_ecg_by_id():
