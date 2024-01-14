@@ -1,7 +1,7 @@
 from bson import ObjectId
 from motor import motor_asyncio
 from idoven_app.idoven.domain.ecg_repository import ECGRepository
-from idoven_app.idoven.domain.ecg import ECG
+from idoven_app.idoven.domain.ecg import ECG, Lead
 
 
 class MongoECGRepository(ECGRepository):
@@ -20,4 +20,4 @@ class MongoECGRepository(ECGRepository):
 
     @staticmethod
     def _create_ecg(ecg: dict) -> ECG:
-        return ECG(ecg_id=ecg["_id"], date=ecg["date"], leads=ecg["leads"])
+        return ECG(ecg_id=ecg["_id"], date=ecg["date"], leads=[Lead(**lead) for lead in ecg["leads"]])
