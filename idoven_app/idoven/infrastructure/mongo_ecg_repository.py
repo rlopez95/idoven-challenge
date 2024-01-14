@@ -20,4 +20,4 @@ class MongoECGRepository(ECGRepository):
 
     @staticmethod
     def _create_ecg(ecg: dict) -> ECG:
-        return ECG(ecg_id=ecg["_id"], date=ecg["date"], leads=[Lead(**lead) for lead in ecg["leads"]])
+        return ECG(ecg_id=str(ecg["_id"]), date=ecg["date"], leads=[Lead(**lead) for lead in ecg["leads"]])
