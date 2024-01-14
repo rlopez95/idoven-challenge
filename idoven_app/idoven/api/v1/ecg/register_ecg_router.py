@@ -4,12 +4,13 @@ from idoven.domain.command_handler import CommandHandler
 from idoven.use_cases.register_ecg_command import RegisterECGCommand, RegisterECGCommandHandler
 from idoven.infrastructure.mongo_ecg_repository import MongoECGRepository
 from idoven.api.v1.ecg.ecg_request import ECGRequest
+from idoven.config import settings
 
-register_ecg_router = APIRouter(prefix="/api/v1")
+register_ecg_router = APIRouter(prefix=settings.api_v1_prefix)
 
 
 async def _register_ecg_command_handler() -> CommandHandler:
-    repository = MongoECGRepository()
+    repository = MongoECGRepository(mongo_uri=settings.mongo_uri)
     return RegisterECGCommandHandler(repository)
 
 
