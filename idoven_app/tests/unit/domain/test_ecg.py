@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from idoven.domain.ecg import ECG, Lead, ECGInvalidException
+from idoven_app.idoven.domain.ecg import ECG, Lead, ECGInvalidException
 from tests.helper.test_builder import ECGBuilder, TestECGData
 
 

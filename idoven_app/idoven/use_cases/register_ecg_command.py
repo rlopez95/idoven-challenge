@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime
-from idoven.domain.ecg_repository import ECGRepository
-from idoven.domain.ecg import ECGFactory
-from idoven.domain.command_handler import CommandHandler
-from idoven.domain.command import Command
-from idoven.domain.command_response import CommandResponse
-from idoven.domain.ecg import Lead
+from idoven_app.idoven.domain.ecg_repository import ECGRepository
+from idoven_app.idoven.domain.ecg import ECGFactory
+from idoven_app.idoven.domain.command_handler import CommandHandler
+from idoven_app.idoven.domain.command import Command
+from idoven_app.idoven.domain.command_response import CommandResponse
+from idoven_app.idoven.domain.ecg import Lead
 
 
 class RegisterECGCommand(Command):

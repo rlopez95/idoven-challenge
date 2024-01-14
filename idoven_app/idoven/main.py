@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from idoven.api.v1.health import health_router
-from idoven.api.v1.ecg.register_ecg_router import register_ecg_router
+from idoven_app.idoven.api.v1.health import health_router
+from idoven_app.idoven.api.v1.ecg.register_ecg_router import register_ecg_router
 
 app = FastAPI()
 

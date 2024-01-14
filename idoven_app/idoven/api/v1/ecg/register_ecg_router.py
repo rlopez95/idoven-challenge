@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from idoven.domain.ecg import ECGInvalidException
-from idoven.domain.command_handler import CommandHandler
-from idoven.use_cases.register_ecg_command import RegisterECGCommand, RegisterECGCommandHandler
-from idoven.infrastructure.mongo_ecg_repository import MongoECGRepository
-from idoven.api.v1.ecg.ecg_request import ECGRequest
-from idoven.config import settings
+from idoven_app.idoven.domain.ecg import ECGInvalidException
+from idoven_app.idoven.domain.command_handler import CommandHandler
+from idoven_app.idoven.use_cases.register_ecg_command import RegisterECGCommand, RegisterECGCommandHandler
+from idoven_app.idoven.infrastructure.mongo_ecg_repository import MongoECGRepository
+from idoven_app.idoven.api.v1.ecg.ecg_request import ECGRequest
+from idoven_app.idoven.settings import settings
 
 register_ecg_router = APIRouter(prefix=settings.api_v1_prefix)
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from idoven.infrastructure.in_memory_ecg_repository import InMemoryECGRepository
+from idoven_app.idoven.infrastructure.in_memory_ecg_repository import InMemoryECGRepository
 from tests.helper.test_builder import ECGBuilder, TestECGData
 
 

@@ -1,7 +1,7 @@
 from bson import ObjectId
 from motor import motor_asyncio
-from idoven.domain.ecg_repository import ECGRepository
-from idoven.domain.ecg import ECG
+from idoven_app.idoven.domain.ecg_repository import ECGRepository
+from idoven_app.idoven.domain.ecg import ECG
 
 
 class MongoECGRepository(ECGRepository):

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from idoven.domain.ecg import ECG
+from idoven_app.idoven.domain.ecg import ECG
 
 
 class ECGRepository(ABC):

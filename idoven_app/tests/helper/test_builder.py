@@ -1,7 +1,7 @@
 from typing import Self
 from datetime import datetime
 from bson import ObjectId
-from idoven.domain.ecg import ECGFactory, ECG, Lead
+from idoven_app.idoven.domain.ecg import ECGFactory, ECG, Lead
 
 
 class TestECGData:

@@ -1,6 +1,6 @@
 import asyncio
-from idoven.domain.ecg import ECG
-from idoven.domain.ecg_repository import ECGRepository
+from idoven_app.idoven.domain.ecg import ECG
+from idoven_app.idoven.domain.ecg_repository import ECGRepository
 
 
 class InMemoryECGRepository(ECGRepository):
