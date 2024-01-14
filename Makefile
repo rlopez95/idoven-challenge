@@ -19,11 +19,11 @@ update: ## Update dependencies
 
 .PHONY: up
 up:    ## Run the app
-	docker-compose up --build idoven
+	docker compose up --build idoven
 
 .PHONY: down
 down: ## Stop and remove all the Docker services, volumes and networks
-	docker-compose down -v --remove-orphans
+	docker compose down -v --remove-orphans
 
 .PHONY: dev
 dev:    ## Run the server in dev mode
@@ -35,15 +35,15 @@ format-code:
 
 .PHONY: test-unit
 test-unit: ## Run all unit tests
-	docker-compose run --rm --no-deps idoven poetry run pytest idoven_app/tests/unit
+	docker compose run --rm --no-deps idoven poetry run pytest idoven_app/tests/unit
 
 .PHONY: test-integration
 test-integration: ## Run all integration tests
-	docker-compose run --rm idoven poetry run pytest idoven_app/tests/integration
+	docker compose run --rm idoven poetry run pytest idoven_app/tests/integration
 
 .PHONY: test-acceptance
 test-acceptance: ## Run all acceptance tests
-	docker-compose run --rm idoven poetry run pytest idoven/tests/acceptance
+	docker compose run --rm idoven poetry run pytest idoven/tests/acceptance
 
 .PHONY: test
 test: test-unit test-integration test-acceptance
