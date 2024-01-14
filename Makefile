@@ -43,7 +43,7 @@ test-integration: ## Run all integration tests
 
 .PHONY: test-acceptance
 test-acceptance: ## Run all acceptance tests
-	docker compose run --rm idoven poetry run pytest idoven/tests/acceptance
+	docker compose run --rm idoven poetry run pytest idoven_app/tests/acceptance
 
 .PHONY: test
 test: test-unit test-integration test-acceptance
