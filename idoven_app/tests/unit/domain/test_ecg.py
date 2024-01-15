@@ -6,7 +6,13 @@ from idoven_app.tests.helper.test_builder import ECGBuilder, TestECGData
 
 @pytest.mark.parametrize(
     "input_signal, expected_cross_count",
-    [([1, 0, -1, 2, -3], 3), ([1, -1], 1), ([-1], 0), ([1, 2, 3], 0), ([1, 0, 0, -1], 1)],
+    [
+        ([1, 0, -1, 2, -3], 3),
+        ([1, -1], 1),
+        ([-1], 0),
+        ([1, 2, 3], 0),
+        ([1, 0, 0, -1], 1),
+    ],
 )
 def test_lead_returns_right_cross_zero_count(input_signal, expected_cross_count):
     lead = Lead(name="I", signal=input_signal)

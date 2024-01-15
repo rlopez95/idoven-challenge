@@ -3,6 +3,7 @@ from idoven_app.idoven.infrastructure.mongo_ecg_repository import MongoECGReposi
 from idoven_app.tests.helper.test_builder import ECGBuilder
 from idoven_app.idoven.config import settings
 
+
 async def test_register_a_ecg():
     ecg_id = str(ObjectId())
     ecg = ECGBuilder().build_ecg_with_id(ecg_id).build()

@@ -7,7 +7,10 @@ from idoven_app.idoven.domain.ecg import ECGFactory, ECG, Lead
 class TestECGData:
     ANY_ECG_ID = str(ObjectId())
     ANY_DATE = datetime(2024, 1, 1, 12, 30, 0)
-    ANY_LEADS = [Lead(name="I", signal=[-1, 2, -1, -2, 3]), Lead(name="II", signal=[5, 0, -5, 0, 5])]
+    ANY_LEADS = [
+        Lead(name="I", signal=[-1, 2, -1, -2, 3]),
+        Lead(name="II", signal=[5, 0, -5, 0, 5]),
+    ]
 
 
 class ECGBuilder:

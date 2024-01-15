@@ -5,15 +5,18 @@ from idoven_app.idoven.domain.command_response import CommandResponse
 from idoven_app.idoven.domain.ecg import ECG, ECGNotFoundException
 from idoven_app.idoven.domain.ecg_repository import ECGRepository
 
+
 class InsightsECGCommand(Command):
     def __init__(self, ecg_id: str) -> None:
         self.ecg_id = ecg_id
         super().__init__(uuid.uuid1())
-    
+
+
 class InsightsCommandResponse(CommandResponse):
     def __init__(self, ecg: ECG) -> None:
         self.insights = ecg.leads_zero_crosses
-    
+
+
 class InsightsECGCommandHandler(CommandHandler):
     def __init__(self, ecg_repository: ECGRepository):
         self._ecg_repository = ecg_repository

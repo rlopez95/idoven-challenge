@@ -26,7 +26,11 @@ def test_register_a_ecg() -> None:
 
 def test_register_a_ecg_with_no_leads_returns_bad_request() -> None:
     invalid_leads = []
-    payload = {"ecg_id": TestECGData.ANY_ECG_ID, "date": str(TestECGData.ANY_DATE), "leads": invalid_leads}
+    payload = {
+        "ecg_id": TestECGData.ANY_ECG_ID,
+        "date": str(TestECGData.ANY_DATE),
+        "leads": invalid_leads,
+    }
     response = client.post("/api/v1/register", json=payload)
 
     ecg_json = response.json()
@@ -36,9 +40,14 @@ def test_register_a_ecg_with_no_leads_returns_bad_request() -> None:
         == f"The ECG request with id: {TestECGData.ANY_ECG_ID}, date: {TestECGData.ANY_DATE} and leads {invalid_leads} is invalid"
     )
 
+
 def test_register_a_ecg_with_invalid_ecg_id_returns_bad_request() -> None:
     invalid_id = "invalid-ecg-id"
-    payload = {"ecg_id": invalid_id, "date": str(TestECGData.ANY_DATE), "leads": [lead.to_dict() for lead in TestECGData.ANY_LEADS]}
+    payload = {
+        "ecg_id": invalid_id,
+        "date": str(TestECGData.ANY_DATE),
+        "leads": [lead.to_dict() for lead in TestECGData.ANY_LEADS],
+    }
     response = client.post("/api/v1/register", json=payload)
 
     ecg_json = response.json()

@@ -15,9 +15,17 @@ class MongoECGRepository(ECGRepository):
 
     async def save(self, ecg: ECG) -> None:
         await self._database.ecg.insert_one(
-            {"_id": ObjectId(ecg.ecg_id), "date": ecg.date, "leads": [lead.to_dict() for lead in ecg.leads]}
+            {
+                "_id": ObjectId(ecg.ecg_id),
+                "date": ecg.date,
+                "leads": [lead.to_dict() for lead in ecg.leads],
+            }
         )
 
     @staticmethod
     def _create_ecg(ecg: dict) -> ECG:
-        return ECG(ecg_id=str(ecg["_id"]), date=ecg["date"], leads=[Lead(**lead) for lead in ecg["leads"]])
+        return ECG(
+            ecg_id=str(ecg["_id"]),
+            date=ecg["date"],
+            leads=[Lead(**lead) for lead in ecg["leads"]],
+        )
