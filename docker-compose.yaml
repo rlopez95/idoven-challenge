@@ -7,12 +7,30 @@ services:
     env_file:
       - .env
     environment:
-      PYTHONPATH: .
+      - PYTHONPATH=.
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=postgredb
     ports:
       - "8080:8080"
     depends_on:
+      - "postgres"
       - "mongo"
       - "mongo-seed"
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=localhost
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
 
   mongo-seed:
     build: mongo-seed
@@ -26,3 +44,6 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: ecg
+
+volumes:
+  postgres-data:
