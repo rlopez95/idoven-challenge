@@ -9,25 +9,15 @@ from fastapi.security import (
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from idoven_app.idoven.config import settings
-
-
-SECRET_KEY = "adba27e22c8cff65dd8e713bce6383c789eadcae6c95945ceab3c94a2697b8d9"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "hashed_password": "$2b$12$b2YV8Q8TuHS1Hfrrtf1EFehdYYtqz2xN3HjTEi1LFjkxdZzQrJsni", # password1
-        "disabled": False,
-    },
-    "alice": {
-        "username": "alice",
-        "hashed_password": "$2b$12$IY7mAOnXN3HSEp1QJcWP0OU3t2RFbbxj3Eo8fS0dGJy7nT/2bOxqu", # password2
-        "disabled": True,
-    },
-}
+from idoven_app.idoven.domain.command_handler import CommandHandler
+from idoven_app.idoven.domain.user import Role
+from idoven_app.idoven.infrastructure.postgres_user_repository import PostgresUserRepository
+from idoven_app.idoven.use_cases.find_user_command import (
+    FindUserCommand,
+    FindUserCommandHandler,
+    FindUserCommandResponse,
+)
+from idoven_app.idoven.config import settings
 
 
 class Token(BaseModel):
@@ -42,57 +32,59 @@ class TokenData(BaseModel):
 
 class User(BaseModel):
     username: str
-    disabled: bool | None = None
 
 
 class UserInDB(User):
     hashed_password: str
-    role: str = "USER"
+    role: Role = Role.USER
 
 
 auth_router = APIRouter(prefix=settings.api_v1_prefix)
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=f"{settings.api_v1_prefix}/token",
-    scopes={"USER": "Read information about user ECG.", "ADMIN": "Creates new users."},
+    scopes={Role.USER.value: "Read information about user ECG.", Role.ADMIN.value: "Creates new users."},
 )
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+
+async def _find_user_command_handler() -> CommandHandler:
+    repository = PostgresUserRepository(postgres_uri=settings.postgres_uri)
+    return FindUserCommandHandler(repository)
 
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
+async def get_user(
+    username: str, find_user_command_handler: CommandHandler = Depends(_find_user_command_handler)
+) -> FindUserCommandResponse:
+    command = FindUserCommand(username=username)
+    return await find_user_command_handler.process(command)
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(fake_db, username: str, password: str):
-    if user := get_user(fake_db, username):
-        return user if verify_password(password, user.hashed_password) else False
+async def authenticate_user(
+    username: str,
+    password: str,
+    find_user_command_handler: CommandHandler = Depends(_find_user_command_handler),
+):
+    command = FindUserCommand(username=username)
+    user_response: FindUserCommandResponse = find_user_command_handler.process(command)
+    if user_response:
+        user = user_response.user
+        return user if user.verify_password(password) else False
     else:
         return False
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode["exp"] = expire
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.jwt_algorith)
 
 
-async def get_current_user(
-    security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)
-):
+async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)) -> UserInDB:
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -103,7 +95,7 @@ async def get_current_user(
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -111,7 +103,7 @@ async def get_current_user(
         token_data = TokenData(scopes=token_scopes, username=username)
     except (JWTError, ValidationError) as e:
         raise credentials_exception from e
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     for scope in security_scopes.scopes:
@@ -124,22 +116,17 @@ async def get_current_user(
     return user
 
 
-async def get_current_active_user(
-    current_user: User = Security(get_current_user, scopes=["USER"])
-):
-    if current_user.disabled:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
-    return current_user
-
-
 @auth_router.post("/token")
 async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends()
+    form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect username or password",
+        )
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username, "scopes": [user.role]},
         expires_delta=access_token_expires,
@@ -148,7 +135,5 @@ async def login_for_access_token(
 
 
 @auth_router.get("/users/me/items/")
-async def read_own_items(
-    current_user: User = Security(get_current_active_user, scopes=["USER"])
-):
+async def read_own_items(current_user: User = Security(get_current_user, scopes=[Role.USER])):
     return [{"item_id": "Foo", "owner": current_user.username}]
