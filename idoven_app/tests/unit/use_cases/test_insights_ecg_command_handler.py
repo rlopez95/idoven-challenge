@@ -6,7 +6,7 @@ from idoven_app.idoven.use_cases.insights_ecg_command import (
     InsightsECGCommand,
     InsightsECGCommandHandler,
 )
-from idoven_app.tests.helper.test_builder import ECGBuilder, TestECGData
+from idoven_app.tests.helper.test_ecg_builder import ECGBuilder, TestECGData
 
 
 async def test_get_insights_ecg():

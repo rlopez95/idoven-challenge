@@ -1,7 +1,6 @@
 from bson import ObjectId
 from fastapi.testclient import TestClient
 from fastapi import status
-from idoven_app.tests.helper.test_builder import TestECGData
 from idoven_app.main import app
 
 client = TestClient(app)

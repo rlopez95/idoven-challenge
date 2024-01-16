@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from idoven_app.idoven.domain.ecg import ECG, Lead, ECGInvalidException
-from idoven_app.tests.helper.test_builder import ECGBuilder, TestECGData
+from idoven_app.tests.helper.test_ecg_builder import ECGBuilder, TestECGData
 
 
 @pytest.mark.parametrize(
