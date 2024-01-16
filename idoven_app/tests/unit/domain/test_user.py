@@ -1,6 +1,6 @@
 import pytest
 from idoven_app.tests.helper.test_user_builder import TestUserData, UserBuilder
-from idoven_app.idoven.domain.user import User, Role, UserFactory, UserInvalidException
+from idoven_app.idoven.domain.user import UserInvalidException
 
 
 def test_user_verifies_password():
