@@ -1,4 +1,4 @@
-import uuid
+from uuid import UUID
 from enum import StrEnum
 from dataclasses import dataclass, asdict
 from passlib.context import CryptContext
@@ -13,7 +13,7 @@ class Role(StrEnum):
 
 @dataclass
 class User:
-    user_id: str
+    user_id: UUID
     username: str
     hashed_password: str
     role: Role
@@ -27,11 +27,9 @@ class User:
 
 class UserFactory:
     @staticmethod
-    def make(user_id: str, username: str, password: str, role: Role) -> User:
-        try:
-            uuid.UUID(user_id)
-        except ValueError as e:
-            raise UserInvalidException("Invalid uuid for user id") from e
+    def make(user_id: UUID, username: str, password: str, role: Role) -> User:
+        if not user_id:
+            raise UserInvalidException("User must have a user_id")
 
         if not username:
             raise UserInvalidException("User must have a username")
@@ -42,7 +40,7 @@ class UserFactory:
         if not role or role not in Role.__members__.values():
             raise UserInvalidException("User must have a valid role")
 
-        return User(user_id=user_id, username=username, password=_pwd_context.hash(password), role=role)
+        return User(user_id=user_id, username=username, hashed_password=_pwd_context.hash(password), role=role)
 
 
 class UserInvalidException(Exception):
