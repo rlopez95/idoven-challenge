@@ -7,10 +7,9 @@ from fastapi.security import (
     SecurityScopes,
 )
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from idoven_app.idoven.config import settings
 from idoven_app.idoven.domain.command_handler import CommandHandler
-from idoven_app.idoven.domain.user import Role
+from idoven_app.idoven.domain.user import Role, User
 from idoven_app.idoven.infrastructure.postgres_user_repository import PostgresUserRepository
 from idoven_app.idoven.use_cases.find_user_command import (
     FindUserCommand,
@@ -28,15 +27,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str | None = None
     scopes: list[str] = []
-
-
-class User(BaseModel):
-    username: str
-
-
-class UserInDB(User):
-    hashed_password: str
-    role: Role = Role.USER
 
 
 auth_router = APIRouter(prefix=settings.api_v1_prefix)
@@ -57,7 +47,8 @@ async def get_user(
     username: str, find_user_command_handler: CommandHandler = Depends(_find_user_command_handler)
 ) -> FindUserCommandResponse:
     command = FindUserCommand(username=username)
-    return await find_user_command_handler.process(command)
+    user_response: FindUserCommandResponse = await find_user_command_handler.process(command)
+    return user_response.user
 
 
 async def authenticate_user(
@@ -84,7 +75,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     return jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.jwt_algorith)
 
 
-async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)) -> UserInDB:
+async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)) -> User:
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -95,7 +86,7 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorith])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -103,7 +94,7 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
         token_data = TokenData(scopes=token_scopes, username=username)
     except (JWTError, ValidationError) as e:
         raise credentials_exception from e
-    user = get_user(username=token_data.username)
+    user = await get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     for scope in security_scopes.scopes:
@@ -126,7 +117,7 @@ async def login_for_access_token(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect username or password",
         )
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=settings.token_expiration_time)
     access_token = create_access_token(
         data={"sub": user.username, "scopes": [user.role]},
         expires_delta=access_token_expires,
