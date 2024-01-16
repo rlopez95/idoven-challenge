@@ -1,3 +1,4 @@
+from uuid import UUID
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from bson import ObjectId
@@ -24,6 +25,7 @@ class Lead:
 @dataclass
 class ECG:
     ecg_id: str
+    user_id: str
     date: datetime
     leads: list[Lead]
 
@@ -34,11 +36,14 @@ class ECG:
 
 class ECGFactory:
     @staticmethod
-    def make(ecg_id: str, date: datetime, leads: list[Lead]) -> ECG:
+    def make(ecg_id: str, user_id: UUID, date: datetime, leads: list[Lead]) -> ECG:
         try:
             ObjectId(ecg_id)
         except InvalidId as exception:
             raise ECGInvalidException("ECG id must be a valid identifier") from exception
+
+        if not user_id:
+            raise ECGInvalidException("ECG must belong to a user")
 
         if not date:
             raise ECGInvalidException("ECG must have a date")
@@ -49,7 +54,7 @@ class ECGFactory:
         if not all(lead.signal for lead in leads):
             raise ECGInvalidException("All ECG channels must have a value")
 
-        return ECG(ecg_id=ecg_id, date=date, leads=leads)
+        return ECG(ecg_id=ecg_id, user_id=user_id, date=date, leads=leads)
 
 
 class ECGInvalidException(Exception):

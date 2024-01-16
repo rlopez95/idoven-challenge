@@ -12,9 +12,7 @@ from idoven_app.idoven.use_cases.insights_ecg_command import (
 from idoven_app.idoven.config import settings
 
 
-insights_ecg_router = APIRouter(
-    prefix=settings.api_v1_prefix, dependencies=[Security(get_current_user, scopes=[Role.USER])]
-)
+insights_ecg_router = APIRouter(prefix=settings.api_v1_prefix)
 
 
 async def _insigths_ecg_command_handler() -> CommandHandler:
@@ -25,11 +23,14 @@ async def _insigths_ecg_command_handler() -> CommandHandler:
 @insights_ecg_router.get("/insights/{ecg_id}", status_code=status.HTTP_200_OK)
 async def insights_ecg(
     ecg_id: str,
+    user: User = Security(get_current_user, scopes=[Role.USER]),
     insights_ecg_command_handler: CommandHandler = Depends(_insigths_ecg_command_handler),
 ):
     try:
-        command = InsightsECGCommand(ecg_id)
+        command = InsightsECGCommand(ecg_id=ecg_id, user_id=user.user_id)
         insight_response: InsightsCommandResponse = await insights_ecg_command_handler.process(command)
     except ECGNotFoundException as exception:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ECG {ecg_id} not found") from exception
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"ECG {ecg_id} not found for current user {user.username}"
+        ) from exception
     return insight_response.insights

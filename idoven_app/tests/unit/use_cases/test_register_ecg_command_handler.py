@@ -11,6 +11,7 @@ async def test_register_ecg():
     ecg = ECGBuilder().build()
     command = RegisterECGCommand(
         ecg_id=TestECGData.ANY_ECG_ID,
+        user_id=TestECGData.ANY_USER_ID,
         date=TestECGData.ANY_DATE,
         leads=TestECGData.ANY_LEADS,
     )

@@ -10,19 +10,21 @@ from idoven_app.tests.helper.test_builder import ECGBuilder, TestECGData
 
 
 async def test_get_insights_ecg():
-    command = InsightsECGCommand(TestECGData.ANY_ECG_ID)
+    command = InsightsECGCommand(TestECGData.ANY_ECG_ID, TestECGData.ANY_USER_ID)
     repository = AsyncMock(ECGRepository)
-    repository.find_by_id.return_value = ECGBuilder().build_ecg_with_id(TestECGData.ANY_ECG_ID).build()
+    repository.find_by_id.return_value = (
+        ECGBuilder().build_ecg_with_id(TestECGData.ANY_ECG_ID).build_ecg_with_user_id(TestECGData.ANY_USER_ID).build()
+    )
     handler = InsightsECGCommandHandler(repository)
     actual_ecg = await handler.process(command)
 
-    repository.find_by_id.assert_called_once_with(command.ecg_id)
+    repository.find_by_id.assert_called_once_with(command.ecg_id, command.user_id)
 
     assert actual_ecg.insights == {"I": 3, "II": 2}
 
 
 async def test_raises_an_error_when_the_ecg_is_not_found():
-    command = InsightsECGCommand(TestECGData.ANY_ECG_ID)
+    command = InsightsECGCommand(TestECGData.ANY_ECG_ID, TestECGData.ANY_ECG_ID)
     repository = AsyncMock(ECGRepository)
     repository.find_by_id.return_value = None
     handler = InsightsECGCommandHandler(repository)

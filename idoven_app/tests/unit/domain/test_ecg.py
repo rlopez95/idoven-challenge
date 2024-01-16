@@ -24,7 +24,7 @@ def test_ecg_returns_leads_zero_crosses_by_lead_name():
     channel_II = Lead(name="II", signal=[-5, 5, 3, -3, -3, -2, -1, 0, 10])
     channel_aVR = Lead(name="aVR", signal=[9, 2, -2, -9, -3])
     leads = [channel_I, channel_II, channel_aVR]
-    ecg = ECG(ecg_id="ecg_id", date=datetime.now(), leads=leads)
+    ecg = ECG(ecg_id="ecg_id", user_id="user_id", date=datetime.now(), leads=leads)
     assert ecg.leads_zero_crosses == {"I": 3, "II": 3, "aVR": 1}
 
 
