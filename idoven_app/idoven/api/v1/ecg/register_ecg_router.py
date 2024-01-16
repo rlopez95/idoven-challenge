@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from idoven_app.idoven.api.v1.auth import get_current_user
-from idoven_app.idoven.domain.ecg import ECGInvalidException
+from idoven_app.idoven.domain.ecg import ECG, ECGInvalidException
 from idoven_app.idoven.domain.command_handler import CommandHandler
 from idoven_app.idoven.domain.user import Role
 from idoven_app.idoven.use_cases.register_ecg_command import (
@@ -21,7 +21,7 @@ async def _register_ecg_command_handler() -> CommandHandler:
     return RegisterECGCommandHandler(repository)
 
 
-@register_ecg_router.post("/register", status_code=status.HTTP_201_CREATED)
+@register_ecg_router.post("/register", response_model=ECG, status_code=status.HTTP_201_CREATED)
 async def register_ecg(
     ecg_request: ECGRequest,
     register_ecg_command_handler: CommandHandler = Depends(_register_ecg_command_handler),
@@ -29,6 +29,7 @@ async def register_ecg(
     try:
         command = RegisterECGCommand(ecg_id=ecg_request.ecg_id, date=ecg_request.date, leads=ecg_request.leads)
         await register_ecg_command_handler.process(command)
+        return ECG(ecg_id=ecg_request.ecg_id, date=ecg_request.date, leads=ecg_request.leads)
     except ECGInvalidException as invalid_exception:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
