@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Security, status
+from idoven_app.idoven.api.v1.auth import get_current_user
 from idoven_app.idoven.domain.command_handler import CommandHandler
 from idoven_app.idoven.domain.ecg import ECGNotFoundException
+from idoven_app.idoven.domain.user import Role, User
 from idoven_app.idoven.infrastructure.mongo_ecg_repository import MongoECGRepository
 from idoven_app.idoven.use_cases.insights_ecg_command import (
     InsightsCommandResponse,
@@ -10,7 +12,9 @@ from idoven_app.idoven.use_cases.insights_ecg_command import (
 from idoven_app.idoven.config import settings
 
 
-insights_ecg_router = APIRouter(prefix=settings.api_v1_prefix)
+insights_ecg_router = APIRouter(
+    prefix=settings.api_v1_prefix, dependencies=[Security(get_current_user, scopes=[Role.USER])]
+)
 
 
 async def _insigths_ecg_command_handler() -> CommandHandler:
@@ -19,7 +23,7 @@ async def _insigths_ecg_command_handler() -> CommandHandler:
 
 
 @insights_ecg_router.get("/insights/{ecg_id}", status_code=status.HTTP_200_OK)
-async def register_ecg(
+async def insights_ecg(
     ecg_id: str,
     insights_ecg_command_handler: CommandHandler = Depends(_insigths_ecg_command_handler),
 ):

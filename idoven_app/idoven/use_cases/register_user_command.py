@@ -3,7 +3,7 @@ from idoven_app.idoven.domain.command_handler import CommandHandler
 from idoven_app.idoven.domain.command import Command
 from idoven_app.idoven.domain.command_response import CommandResponse
 from idoven_app.idoven.domain.user_repository import UserRepository
-from idoven_app.idoven.domain.user import Role, User, UserFactory
+from idoven_app.idoven.domain.user import Role, UserFactory
 
 
 class RegisterUserCommand(Command):

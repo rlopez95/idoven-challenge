@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Security, status
+from idoven_app.idoven.api.v1.auth import get_current_user
 from idoven_app.idoven.domain.ecg import ECGInvalidException
 from idoven_app.idoven.domain.command_handler import CommandHandler
+from idoven_app.idoven.domain.user import Role
 from idoven_app.idoven.use_cases.register_ecg_command import (
     RegisterECGCommand,
     RegisterECGCommandHandler,
@@ -9,7 +11,9 @@ from idoven_app.idoven.infrastructure.mongo_ecg_repository import MongoECGReposi
 from idoven_app.idoven.api.v1.ecg.ecg_request import ECGRequest
 from idoven_app.idoven.config import settings
 
-register_ecg_router = APIRouter(prefix=settings.api_v1_prefix)
+register_ecg_router = APIRouter(
+    prefix=settings.api_v1_prefix, dependencies=[Security(get_current_user, scopes=[Role.USER])]
+)
 
 
 async def _register_ecg_command_handler() -> CommandHandler:
