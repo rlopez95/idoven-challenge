@@ -38,14 +38,13 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 
-async def _find_user_command_handler() -> CommandHandler:
+def _get_find_user_command_handler() -> CommandHandler:
     repository = PostgresUserRepository(postgres_uri=settings.postgres_uri)
     return FindUserCommandHandler(repository)
 
 
-async def get_user(
-    username: str, find_user_command_handler: CommandHandler = Depends(_find_user_command_handler)
-) -> FindUserCommandResponse:
+async def get_user(username: str) -> FindUserCommandResponse:
+    find_user_command_handler = _get_find_user_command_handler()
     command = FindUserCommand(username=username)
     user_response: FindUserCommandResponse = await find_user_command_handler.process(command)
     return user_response.user
@@ -54,10 +53,10 @@ async def get_user(
 async def authenticate_user(
     username: str,
     password: str,
-    find_user_command_handler: CommandHandler = Depends(_find_user_command_handler),
 ):
+    find_user_command_handler = _get_find_user_command_handler()
     command = FindUserCommand(username=username)
-    user_response: FindUserCommandResponse = find_user_command_handler.process(command)
+    user_response: FindUserCommandResponse = await find_user_command_handler.process(command)
     if user_response:
         user = user_response.user
         return user if user.verify_password(password) else False
@@ -111,7 +110,7 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Token:
-    user = authenticate_user(form_data.username, form_data.password)
+    user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -123,8 +122,3 @@ async def login_for_access_token(
         expires_delta=access_token_expires,
     )
     return Token(access_token=access_token, token_type="bearer")
-
-
-@auth_router.get("/users/me/items/")
-async def read_own_items(current_user: User = Security(get_current_user, scopes=[Role.USER])):
-    return [{"item_id": "Foo", "owner": current_user.username}]
