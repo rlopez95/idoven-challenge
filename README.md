@@ -52,7 +52,7 @@ The usage of Docker, Poetry and Make is a decision to make testing easier, as we
 
 As previously mentioned, the project follows a hexagonal architecture, reducing as much as possible any dependencies. 
 The comunication between the ```api``` and ```infrastructure```  with ```domain``` layer happens in the ```use cases```
-layer. We introduced the usage of **command pattern** to encapsulate the logic of each request performed against the API and from there, we can easily communicate the requests between layers, keeping the responsabilities as separeted as possible. Also, the existance of classes for requests like **ECGRequest** and **ECG** is because so, we can leverage the parsing capabilities of **Pydantic** bringing some sanity checks to the requests.
+layer. We introduced the usage of **command pattern** to encapsulate the logic of each request performed against the API and from there, we can easily communicate the requests between layers, keeping the responsabilities as separeted as possible. Also, the existance of classes for requests like **ECGRequest** and **ECG** is because of it, we can leverage the parsing capabilities of **Pydantic** bringing some sanity checks to the requests.
 
 Some important considerations about the API layer:
 - The auth system has been implemented as vanilla as possible for simplicity. Although, we have added some separations in code and the usage of custom **Role** coming from an enumerate.
