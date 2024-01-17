@@ -24,7 +24,7 @@ async def test_get_insights_ecg():
 
 
 async def test_raises_an_error_when_the_ecg_is_not_found():
-    command = InsightsECGCommand(TestECGData.ANY_ECG_ID, TestECGData.ANY_ECG_ID)
+    command = InsightsECGCommand(TestECGData.ANY_ECG_ID, TestECGData.ANY_USER_ID)
     repository = AsyncMock(ECGRepository)
     repository.find_by_id.return_value = None
     handler = InsightsECGCommandHandler(repository)
