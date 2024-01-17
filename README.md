@@ -45,7 +45,7 @@ The project has been implemented using python 3.11 and FastAPI and implementing 
 - At **root level**, we can find **ops files** such as poetry files, docker files and makefiles.
 
 The usage of Docker, Poetry and Make is a decision to make testing easier, as well as showing a more realistic approach.
-- **API**: In this folder, files related to the routers responsible for exposing the application's endpoints are located. It follows a versioned API structure. Here, we can find two folders to separate ```user``` and ```ecg``` routers. Also, health check and auth the **auth** system can be found inside.
+- **API**: In this folder, files related to the routers responsible for exposing the application's endpoints are located. It follows a versioned API structure. Here, we can find two folders to separate ```user``` and ```ecg``` routers. Also, health check and the **auth** system can be found inside.
 - **Infrastructure**: In this folder, implementations of the used databases for our repositories are found (adapters); in our case, PostgreSQL, MongoDB, and an in-memory database.
 - **Use Cases**: In this folder, the functionality associated with the use cases of our application is located, serving as a link between layers (ports and adapters).
 - **Domain**: In this layer, the definition of the main classes of our project is found, as well as the definition of interfaces (ports) of the repositories. The core logic of the application is in these files.
