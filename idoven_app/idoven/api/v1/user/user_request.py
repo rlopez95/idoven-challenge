@@ -1,9 +1,9 @@
-from pydantic import BaseModel, UUID1
+from pydantic import BaseModel
 from idoven_app.idoven.domain.user import Role
 
 
 class UserRequest(BaseModel):
-    user_id: UUID1
+    user_id: str
     username: str
     password: str
     role: Role

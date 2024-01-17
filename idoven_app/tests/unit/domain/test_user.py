@@ -13,7 +13,7 @@ def test_user_factory_creates_a_user():
     assert user.user_id == TestUserData.ANY_USER_ID
 
 
-def test_user_factory_raise_error_with_no_user_id():
+def test_user_factory_raise_error_with_invalid_user_id():
     with pytest.raises(UserInvalidException):
         UserBuilder().build_user_with_user_id("").build()
 

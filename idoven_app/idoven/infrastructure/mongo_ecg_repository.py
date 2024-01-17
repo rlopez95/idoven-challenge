@@ -11,7 +11,7 @@ class MongoECGRepository(ECGRepository):
         client = motor_asyncio.AsyncIOMotorClient(mongo_uri)
         self._database = client.ecg
 
-    async def find_by_id(self, ecg_id: str, user_id: UUID) -> ECG | None:
+    async def find_by_id(self, ecg_id: str, user_id: str) -> ECG | None:
         ecg = await self._database.ecg.find_one({"_id": ObjectId(ecg_id), "user_id": str(user_id)})
         return MongoECGRepository._create_ecg(ecg) if ecg else None
 

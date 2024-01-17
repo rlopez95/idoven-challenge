@@ -8,7 +8,7 @@ from idoven_app.idoven.domain.ecg_repository import ECGRepository
 
 
 class InsightsECGCommand(Command):
-    def __init__(self, ecg_id: str, user_id: UUID) -> None:
+    def __init__(self, ecg_id: str, user_id: str) -> None:
         self.ecg_id = ecg_id
         self.user_id = user_id
         super().__init__(uuid.uuid1())
