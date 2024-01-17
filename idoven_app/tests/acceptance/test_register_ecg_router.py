@@ -74,3 +74,23 @@ def test_register_a_ecg_with_invalid_ecg_id_returns_bad_request() -> None:
         ecg_json["detail"]
         == f"The ECG request with id: {invalid_id}, date: {TestECGData.ANY_DATE} and leads {TestECGData.ANY_LEADS} is invalid"
     )
+
+
+def test_register_duplicated_ucg_returns_already_exists_error():
+    auth_response = client.post("/api/v1/token", data={"username": "johndoe", "password": "password1"})
+    token = auth_response.json()["access_token"]
+
+    ecg_id = "60d7c0ed8e1e0a241c4b4d9d"  # from mongo-seed to ease testing
+    register_response = client.post(
+        "/api/v1/register",
+        json={
+            "ecg_id": ecg_id,
+            "date": str(TestECGData.ANY_DATE),
+            "leads": [lead.to_dict() for lead in TestECGData.ANY_LEADS],
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    register_json = register_response.json()
+    assert register_response.status_code == status.HTTP_409_CONFLICT
+    assert register_json["detail"] == f"The ECG request with id: {ecg_id} already exists"

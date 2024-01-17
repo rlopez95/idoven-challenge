@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from idoven_app.idoven.api.v1.auth import get_current_user
-from idoven_app.idoven.domain.ecg import ECG, ECGInvalidException
+from idoven_app.idoven.domain.ecg import ECG, DuplicatedECGException, ECGInvalidException
 from idoven_app.idoven.domain.command_handler import CommandHandler
 from idoven_app.idoven.domain.user import Role, User
 from idoven_app.idoven.use_cases.register_ecg_command import (
@@ -36,3 +36,8 @@ async def register_ecg(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"The ECG request with id: {ecg_request.ecg_id}, date: {ecg_request.date} and leads {ecg_request.leads} is invalid",
         ) from invalid_exception
+    except DuplicatedECGException as duplicated_error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"The ECG request with id: {ecg_request.ecg_id} already exists",
+        ) from duplicated_error

@@ -60,6 +60,9 @@ class ECGFactory:
 class ECGInvalidException(Exception):
     pass
 
+class DuplicatedECGException(Exception):
+    pass
+
 
 class ECGNotFoundException(Exception):
     pass

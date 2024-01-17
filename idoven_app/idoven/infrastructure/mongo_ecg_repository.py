@@ -1,9 +1,9 @@
-import uuid
 from uuid import UUID
 from bson import ObjectId
 from motor import motor_asyncio
+from pymongo.errors import DuplicateKeyError
 from idoven_app.idoven.domain.ecg_repository import ECGRepository
-from idoven_app.idoven.domain.ecg import ECG, Lead
+from idoven_app.idoven.domain.ecg import ECG, DuplicatedECGException, Lead
 
 
 class MongoECGRepository(ECGRepository):
@@ -16,14 +16,17 @@ class MongoECGRepository(ECGRepository):
         return MongoECGRepository._create_ecg(ecg) if ecg else None
 
     async def save(self, ecg: ECG) -> None:
-        await self._database.ecg.insert_one(
-            {
-                "_id": ObjectId(ecg.ecg_id),
-                "user_id": str(ecg.user_id),
-                "date": ecg.date,
-                "leads": [lead.to_dict() for lead in ecg.leads],
-            }
-        )
+        try:
+            await self._database.ecg.insert_one(
+                {
+                    "_id": ObjectId(ecg.ecg_id),
+                    "user_id": str(ecg.user_id),
+                    "date": ecg.date,
+                    "leads": [lead.to_dict() for lead in ecg.leads],
+                }
+            )
+        except DuplicateKeyError as duplicated_error:
+            raise DuplicatedECGException() from duplicated_error
 
     @staticmethod
     def _create_ecg(ecg: dict) -> ECG:
