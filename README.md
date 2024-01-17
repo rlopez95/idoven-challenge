@@ -23,7 +23,7 @@ The recommended way to test is browsing to ```http://localhost:8080/docs``` and 
 
 - **username**: johndoe, **password**: password1, **role**: USER
 - **username**: daviddoe, **password**: pwd,  **role**: USER
-- **username**: alice, **password**: password2, **role**: ADMIN
+- **username**: alice, **password**: password2,  **role**: ADMIN
 
 #### SOME ECGS IDS:
 
@@ -40,7 +40,7 @@ To run tests:
 
 ## IMPLEMENTATION
 
-The project has been implemented using python 3.11 and FastAPI and implementing async workflows; it is structured following a separation of folders based on hexagonal architecture and DDD. Therefore, the main folders you will find are:
+The project has been implemented using python 3.11 and FastAPI and implementing async workflows; it is structured following a separation of folders based on hexagonal architecture and DDD. Therefore, the main folders we can find are:
 
 - At **root level**, we can find **ops files** such as poetry files, docker files and makefiles.
 
