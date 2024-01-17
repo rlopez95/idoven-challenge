@@ -21,9 +21,9 @@ The recommended way to test is browsing to ```http://localhost:8080/docs``` and 
 
 #### Users:
 
-- **username**: johndoe, **password**: password1 **role**: USER
-- **username**: daviddoe, **password**: pwd **role**: USER
-- **username**: alice, **password**: password2 **role**: ADMIN
+- **username**: johndoe, **password**: password1, **role**: USER
+- **username**: daviddoe, **password**: pwd,  **role**: USER
+- **username**: alice, **password**: password2, **role**: ADMIN
 
 #### SOME ECGS IDS:
 
