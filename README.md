@@ -17,7 +17,7 @@ The recommended way to test is browsing to ```http://localhost:8080/docs``` and 
 
 ## USERS, ECGS AND PASSWORDS:
 
-- To ease the execution of the code, seeds of users and ecgs have been provided. The can be found under ```ìnit.sql``` and ```mongo-seed/ecg_seed.json```. Also, find here some sample:
+- To ease the execution of the code, seeds of users and ecgs have been provided. This initial data can be found under ```ìnit.sql``` and ```mongo-seed/ecg_seed.json```. Also, find here some sample:
 
 #### Users:
 
