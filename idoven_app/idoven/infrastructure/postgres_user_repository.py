@@ -20,6 +20,7 @@ class PostgresUserRepository(UserRepository):
                     return PostgresUserRepository._create_user(user) if user else None
 
     async def save(self, user: User) -> None:
+        print(f"!!! user id - > {user.user_id}")
         async with AsyncConnectionPool(self._connection_uri) as pool:
             async with pool.connection() as conn:
                 async with conn.cursor() as cur:

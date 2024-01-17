@@ -40,6 +40,7 @@ test-unit: ## Run all unit tests
 .PHONY: test-integration
 test-integration: ## Run all integration tests
 	docker compose run --rm idoven poetry run pytest idoven_app/tests/integration
+	docker compose down -v --remove-orphans
 
 .PHONY: test-acceptance
 test-acceptance: ## Run all acceptance tests
