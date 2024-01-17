@@ -1,4 +1,5 @@
 # README
+
 ## Folders
 The project is mainly divided into two folders.
 
@@ -39,7 +40,7 @@ To run tests:
 
 ## IMPLEMENTATION
 
-The project has been implemented with python 3.11 and FastApi; it is structured following a separation of folders based on hexagonal architecture and DDD. Therefore, the main folders you will find are:
+The project has been implemented with python 3.11 and FastAPI and implementing async workflows; it is structured following a separation of folders based on hexagonal architecture and DDD. Therefore, the main folders you will find are:
 
 - At **root level**, we can find **ops files** such as poetry files, docker files and makefiles.
 
@@ -57,6 +58,7 @@ Some important considerations about the API layer:
 - The auth system has been implemented as vanilla as possible for simplicity. Although, we have added some separations in code and the usage of custom **Role** coming from an enumerate.
 - The usage of the pattern ```Client-Supplied Identifier``` is usaged to simplify testing. Providing the ids from the client bring us some benefits like the ability of knowing the user id before inserting the record into the databases,
 this eases testing procedures.
+- For the endpoint ```api/v1/insights/{ecg_id}`` the reason why we return a Not Found 404 is to enfuscate the existance of that ECG belonging to another user.
 
 
 In the domain, Factories have been implemented in order to have one unique point of creation and validation for each domain class. All logic related to **User**, **ECG** and **Lead** has been implemented inside these classes, like 
