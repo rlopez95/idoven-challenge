@@ -72,3 +72,22 @@ def test_register_a_user_with_invalid_user_id_returns_bad_request() -> None:
             password: {TestUserData.ANY_PASSWORD}
             and role {TestUserData.ANY_ROLE} is invalid"""
     )
+
+
+def test_register_duplicated_user_returns_already_exists_error():
+    auth_response = client.post("/api/v1/token", data={"username": "alice", "password": "password2"})
+    token = auth_response.json()["access_token"]
+
+    user_id = "0d6e5f50-5277-11ec-8b28-0242ac130003"  # from testing data
+    register_response = client.post(
+        "/api/v1/user",
+        json={
+            "user_id": user_id,
+            "username": TestUserData.ANY_USER_NAME,
+            "password": TestUserData.ANY_PASSWORD,
+            "role": TestUserData.ANY_ROLE,
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert register_response.status_code == status.HTTP_409_CONFLICT

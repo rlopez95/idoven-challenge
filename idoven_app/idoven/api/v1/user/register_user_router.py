@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from idoven_app.idoven.api.v1.auth import get_current_user
 from idoven_app.idoven.api.v1.user.user_request import UserRequest
-from idoven_app.idoven.domain.user import Role, User, UserInvalidException
+from idoven_app.idoven.domain.user import Role, User, UserAlreadyExistsException, UserInvalidException
 from idoven_app.idoven.domain.command_handler import CommandHandler
 from idoven_app.idoven.infrastructure.postgres_user_repository import PostgresUserRepository
 from idoven_app.idoven.use_cases.register_user_command import RegisterUserCommand
@@ -45,3 +45,8 @@ async def register_user(
             password: {new_user.password}
             and role {new_user.role} is invalid""",
         ) from invalid_exception
+    except UserAlreadyExistsException as duplicated_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"""The user with id: {new_user.user_id} already exists""",
+        ) from duplicated_user

@@ -28,11 +28,11 @@ class User:
 class UserFactory:
     @staticmethod
     def make(user_id: str, username: str, password: str, role: Role) -> User:
-        try: 
+        try:
             uuid.UUID(user_id, version=1)
         except ValueError as ve:
             raise UserInvalidException("User must have a user_id")
-        
+
         if not username:
             raise UserInvalidException("User must have a username")
 
@@ -46,6 +46,10 @@ class UserFactory:
 
 
 class UserInvalidException(Exception):
+    pass
+
+
+class UserAlreadyExistsException(Exception):
     pass
 
 
