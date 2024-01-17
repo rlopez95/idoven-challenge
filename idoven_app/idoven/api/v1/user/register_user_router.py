@@ -32,17 +32,16 @@ async def register_user(
         )
         await register_user_command_handler.process(command)
         return User(
-        user_id=new_user.user_id,
-        username=new_user.username,
-        hashed_password=new_user.password,
-        role=new_user.role,
-    )
+            user_id=new_user.user_id,
+            username=new_user.username,
+            hashed_password=new_user.password,
+            role=new_user.role,
+        )
     except UserInvalidException as invalid_exception:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"""The user with id: {new_user.user_id}, 
-            username: {new_user.username} 
-            password {new_user.password} 
+            username: {new_user.username},
+            password: {new_user.password}
             and role {new_user.role} is invalid""",
         ) from invalid_exception
-    
