@@ -1,6 +1,6 @@
-from idoven_app.idoven.domain.user import UserNotFoundException
 import pytest
 from unittest.mock import AsyncMock
+from idoven_app.idoven.domain.user import UserNotFoundException
 from idoven_app.idoven.domain.user_repository import UserRepository
 from idoven_app.idoven.use_cases.find_user_command import FindUserCommand, FindUserCommandHandler
 from idoven_app.tests.helper.test_user_builder import TestUserData, UserBuilder
